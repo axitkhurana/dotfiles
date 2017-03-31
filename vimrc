@@ -1,90 +1,140 @@
-syntax on
+set nocompatible              " be iMproved, required
+filetype off                  " required
+
+" set the runtime path to include Vundle and initialize
+set rtp+=~/.vim/bundle/Vundle.vim
+call vundle#begin()
+" alternatively, pass a path where Vundle should install plugins
+" call vundle#begin('~/some/path/here')
+
+" let Vundle manage Vundle, required
+Plugin 'gmarik/Vundle.vim'
+Plugin 'scrooloose/nerdtree'
+Plugin 'klen/python-mode'
+Plugin 'Lokaltog/vim-powerline', {'rtp': '/usr/local/lib/python2.7/site-packages/powerline/bindings/vim/'}
+Plugin 'rust-lang/rust.vim'
+
+call vundle#end()            " required
+filetype plugin indent on
+
+" All of your Plugins must be added before the following line
+
+" The rest of your config follows here
+noremap ; l
+noremap l k
+noremap k j
+noremap j h
+
+map <F2> :NERDTreeToggle<CR>
+
+augroup vimrc_autocmds
+    autocmd!
+    " highlight characters past column 120
+    autocmd FileType python highlight Excess ctermbg=DarkGrey guibg=Black
+    autocmd FileType python match Excess /\%120v.*/
+    autocmd FileType python set nowrap
+    augroup END
+
 set background=dark
-set ruler                     " show the line number on the bar
-set more                      " use more prompt
-set autoread                  " watch for file changes
-set number                    " line numbers
-set hidden
-set noautowrite               " don't automagically write on :next
-set lazyredraw                " don't redraw when don't have to
-set showmode
-set showcmd
-set nocompatible              " vim, not vi
-set autoindent smartindent    " auto/smart indent
-set smarttab                  " tab and backspace are smart
-set tabstop=4                 "  spaces
-set softtabstop=4
-set textwidth=80
-set expandtab
-set shiftwidth=4
-set scrolloff=5               " keep at least 5 lines above/below
-set sidescrolloff=5           " keep at least 5 lines left/right
-set history=200
-set backspace=indent,eol,start
-set linebreak
-set cmdheight=2               " command line two lines high
-set undolevels=1000           " 1000 undos
-set updatecount=100           " switch every 100 chars
-set complete=.,w,b,u,U,t,i,d  " do lots of scanning on tab completion
-set ttyfast                   " we have a fast terminal
-set noerrorbells              " No error bells please
-set shell=bash
-set fileformats=unix
-set ff=unix
-filetype on                   " Enable filetype detection
-filetype indent on            " Enable filetype-specific indenting
-filetype plugin on            " Enable filetype-specific plugins
-set wildmode=longest:full
-set wildmenu                  " menu has tab completion
-let maplocalleader=','        " all my macros start with ,
+
+" Python-mode
+" Activate rope
+" Keys:
+" K             Show python docs
+" <Ctrl-Space>  Rope autocomplete
+" <Ctrl-c>g     Rope goto definition
+" <Ctrl-c>d     Rope show documentation
+" <Ctrl-c>f     Rope find occurrences
+" <Leader>b     Set, unset breakpoint (g:pymode_breakpoint enabled)
+" [[            Jump on previous class or function (normal, visual, operator modes)
+" ]]            Jump on next class or function (normal, visual, operator modes)
+" [M            Jump on previous class or method (normal, visual, operator modes)
+" ]M            Jump on next class or method (normal, visual, operator modes)
+let g:pymode_rope = 1
+
+" Documentation
+" let g:pymode_doc = 1
+" let g:pymode_doc_key = 'K'
+
+"Linting
+" let g:pymode_lint = 1
+" let g:pymode_lint_checker = "pyflakes,pep8"
+" Auto check on save
+" let g:pymode_lint_write = 1
+
+" Support virtualenv
+let g:pymode_virtualenv = 1
+
+" Enable breakpoints plugin
+let g:pymode_breakpoint = 1
+let g:pymode_breakpoint_key = '<leader>b'
+
+" syntax highlighting
+let g:pymode_syntax = 1
+let g:pymode_syntax_all = 1
+let g:pymode_syntax_indent_errors = g:pymode_syntax_all
+let g:pymode_syntax_space_errors = g:pymode_syntax_all
+
+" Don't autofold code
+let g:pymode_folding = 0
+
+" Use <leader>l to toggle display of whitespace
+nmap <leader>l :set list!<CR>
+" automatically change window's cwd to file's dir
+set autochdir
+
+" I prefer spaces to tabs
+
+syntax on               " enable syntax highlighting
+set cursorline          " highlight the current line
+set background=dark     " darker color scheme
+set ruler               " show line number in bar
+set nobackup            " don't create pointless backup files; Use VCS instead
+set autoread            " watch for file changes
+set number              " show line numbers
+set showcmd             " show selection metadata
+set showmode            " show INSERT, VISUAL, etc. mode
+set showmatch           " show matching brackets
+set autoindent smartindent  " auto/smart indent
+set smarttab            " better backspace and tab functionality
+set scrolloff=5         " show at least 5 lines above/below
+filetype on             " enable filetype detection
+filetype indent on      " enable filetype-specific indenting
+filetype plugin on      " enable filetype-specific plugins
+
+" column-width visual indication
+let &colorcolumn=join(range(81,999),",")
+highlight ColorColumn ctermbg=235 guibg=#001D2F
+
+" tabs and indenting
+set autoindent          " auto indenting
+set smartindent         " smart indenting
+set expandtab           " spaces instead of tabs
+set tabstop=4           " 4 spaces for tabs
+set shiftwidth=4        " 4 spaces for indentation
+
+" bells
+set noerrorbells        " turn off audio bell
+set visualbell          " but leave on a visual bell
+
+" search
+set hlsearch            " highlighted search results
+set showmatch           " show matching bracket
+
+" other
+set guioptions=aAace    " don't show scrollbar in MacVim
+
+" clipboard
+" set clipboard=unnamed   " allow yy, etc. to interact with OS X clipboard
+
 set laststatus=2
+set statusline+=%F
 
-"  searching
-set incsearch                 " incremental search
-set ignorecase                " search ignoring case
-set hlsearch                  " highlight the search
-set showmatch                 " show matching bracket
-set diffopt=filler,iwhite     " ignore all whitespace and sync
+" shortcuts
+map <F2> :NERDTreeToggle<CR>
 
-"  backup
-set backup
-set backupdir=~/.vim_backup
-set viminfo=%100,'100,/100,h,\"500,:100,n~/.viminfo
-"set viminfo='100,f1
-
-" spelling
-if v:version >= 700
-  " Enable spell check for text files
-  autocmd BufNewFile,BufRead *.txt setlocal spell spelllang=en
+" more subtle popup colors
+if has ('gui_running')
+    highlight Pmenu guibg=#cccccc gui=bold
 endif
-
-" mappings
-" toggle list mode
-nmap <LocalLeader>tl :set list!<cr>
-" toggle paste mode
-nmap <LocalLeader>pp :set paste!<cr>
-
-:fu FuncHaikuCheck()
-	call matchadd('Search', '\%>80v.\+', -1) " line over 80 char
-	call matchadd('Search', '^\s* \s*', -1)  " spaces instead of tabs
-	call matchadd('Search', '\(for\|if\|select\|while\)(', -1)
-		"missing space after control statement
-	call matchadd('Search', '//\S', -1) " Missing space at comment start
-	call matchadd('Search', '\w[,=>+\-*;]\w', -1)
-		"operator without space around it (without false positive on
-		"templated<type>)
-	call matchadd('Search', '^[^#].*[^<]\zs\w*/\w', -1)
-		"operator without space around it (without false positive on
-		"#include <dir/file.h>)
-	call matchadd('Search', '^[^/]\{2}.*\zs[^*][=/+\-< ]$', -1)
-		"operator at end of line (without false positives on /* and */, nor
-		"char*\nClass::method())
-	call matchadd('Search', '^[^#].*\zs[^<]>$', -1)
-		" > operator at end of line (without false positive on #include <file.h>)
-	call matchadd('Search', '){', -1) " Missing space after method header
-	call matchadd('Search', '}\n\s*else', -1) " Malformed else
-	call matchadd('Search', '\s$', -1) "Spaces at end of line
-	call matchadd('Search', ',\S', -1) " Missing space after comma
-	call matchadd('Search', '^}\n\{1,2}\S', -1) " Less than 2 lines between functions
-	call matchadd('Search', '^}\n\{4,}\S', -1) " More than 2 lines between functions
-:endfu
+set backspace=indent,eol,start
